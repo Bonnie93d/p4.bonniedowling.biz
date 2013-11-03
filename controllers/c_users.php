@@ -3,7 +3,7 @@ class users_controller extends base_controller {
 
     public function __construct() {
         parent::__construct();
-        echo "users_controller construct called<br><br>";
+        #echo "users_controller construct called<br><br>";
     } 
 
     public function index() {
@@ -22,14 +22,19 @@ class users_controller extends base_controller {
         echo "This is the logout page";
     }
 
-    public function profile($user_name = NULL) {
+	public function profile($user_name) {
+	
+	
+	    # Pass information to the view instance
 
-        if($user_name == NULL) {
-            echo "No user specified";
-        }
-        else {
-            echo "This is the profile for ".$user_name;
-        }
-    }
+
+	    
+	    $this ->template -> content = View::instance('v_users_profile');
+		$this ->template -> content ->user_name = $user_name;
+	    $this ->template -> title = "Profile";
+	    echo $this ->template;
+	    
+	
+	}
 
 } # end of the class
