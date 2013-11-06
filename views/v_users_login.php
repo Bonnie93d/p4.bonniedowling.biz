@@ -1,4 +1,4 @@
-<!--MEMBER LOGIN FORM---------------------------------------------------------------------------------------->  
+<!--MEMBER LOGIN FORM____________________--> 
 	<table width="70%" border="0" cellspacing="5" cellpadding="5">
 		<tr>
 		<td bgcolor: white colspan="2"><h1>LOGIN</h1></td>

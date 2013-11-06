@@ -1,4 +1,4 @@
-<!--POSTS TABLE---------------------------------------------------------------------------------------->  
+<!--POSTS TABLE____________________--> 
 	<h1>Hi, <?=$user->first_name?>. See what people are saying.</h1>
 	
 	<table width="90%"border="1" cellspacing="5" cellpadding="5">

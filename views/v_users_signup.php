@@ -6,7 +6,7 @@
 		<tr>
 		<td bgcolor: white width="8%"></td>
 		<td bgcolor: white width="92%">
-<!--SIGNUP FORM---------------------------------------------------------------------------------------->  		
+<!--SIGNUP FORM____________________-->		
 		<form method="post" action='/users/p_signup'>
 			<fieldset>
 			<ul>

@@ -4,7 +4,7 @@
 		<td width="24%"><img src="..//libraries/profile_images/<?=$user->profile_image?>" alt="" title="" /></div></td>
 		<td width="76%" rowspan="11" valign="top">
 		
-<!--UPDATE PROFILE---------------------------------------------------------------------------------------->  		
+<!--UPDATE PROFILE____________________--> 		
 		<form method="post" action='/users/p_profile'>
 			<fieldset>
 			<ul>
@@ -40,7 +40,7 @@
 			</fieldset>
 		</form></td>
 		</tr>
-<!--PROFILE PHOTO UPLOAD---------------------------------------------------------------------------------------->  
+<!--PROFILE PHOTO UPLOAD____________________--> 
 		<tr>
 			<td><span class="alert"><?=$image_error?></span></td>
 		</tr>

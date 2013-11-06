@@ -1,4 +1,5 @@
-<!--ADD NEW POST---------------------------------------------------------------------------------------->  
+<!--ADD NEW POST____________________-->
+
 	<form method='POST' action='/posts/p_add'>
 	
 	    <label for='content'>New Post:</label>

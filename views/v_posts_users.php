@@ -1,4 +1,4 @@
-<!--FOLLOW/UNFOLLOW USERS---------------------------------------------------------------------------------------->  
+<!--FOLLOW/UNFOLLOW USERS____________________--> 
 	<h1>Follow/Unfollow Users</h1>
 	
 	<table  border="1" cellspacing="5" cellpadding="5">
