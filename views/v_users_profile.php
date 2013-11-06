@@ -3,11 +3,13 @@
 	<tr>
 		<td width="24%"><img src="..//libraries/profile_images/<?=$user->profile_image?>" alt="" title="" /></div></td>
 		<td width="76%" rowspan="11" valign="top">
+		
 <!--UPDATE PROFILE---------------------------------------------------------------------------------------->  		
 		<form method="post" action='/users/p_profile'>
 			<fieldset>
 			<ul>
 				<li>
+					<span class="alert"><?=$up_status?></span>
 					<label for="user_id"></label><span class="alert"><?=$first_error?></span>
 					<input type="hidden" name="user_id" class="signupFields" value= "<?php echo $user->user_id?>" />
 				</li>

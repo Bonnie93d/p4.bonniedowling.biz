@@ -132,11 +132,11 @@ h3{
         -webkit-border-radius: 10px;
 }
 
-ul.alert{
+.alert{
         width: 96.5%;
         padding: 1px 10px;
-        background: #e1e1e1;
-        font-size: 1.3em;
+        color: #C00;
+        font-size: 12pt;
         margin: 0 0 10px 0;
 }
 
@@ -159,11 +159,7 @@ input[type=password]{
         background: #fff url(../../img/bg_input.png) no-repeat scroll left top;
 }
 
-label{
-        color: #333;
-        font-size: 13 pt;
-        line-height: 15 pt;
-}
+
 
 
 input.button {

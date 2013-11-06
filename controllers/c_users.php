@@ -498,22 +498,26 @@ class users_controller extends base_controller {
 				
 			}
 
-			$up_status = "Upload Complete! ";
+			$up_status = "Update Complete! ";
+			$this->template->content = View::instance('v_users_profile');
+	        $this->template->title = "Profile of ".$this->user->first_name . " " . $this->user->last_name; 
+	        $this->template->content->user_name = $user_name;
+		    $this ->template -> content ->up_status = $up_status;
+		    echo $this ->template;
+
 		    
 		    
 		    
 		    # Insert this user into the database 
 			# Send them to the main page - or whever you want them to go
 
-		    Router::redirect("/posts/");
+		 
 
 			}	
 			
 	}
     
 	    public function im_profile() {
-	
-		# Dump out the results of POST to see what the form submitted
         
 		//Сheck for file
 
@@ -567,8 +571,6 @@ class users_controller extends base_controller {
 			$this->template->content = View::instance('v_users_profile');
 	        $this->template->title = "Profile of ".$this->user->first_name . " " . $this->user->last_name; 
 	        $this->template->content->user_name = $user_name;
-		    $this ->template -> client_files_body = "";
-		    
 		    $this ->template -> content ->image_error = $up_status;
 		    echo $this ->template;
 
