@@ -187,9 +187,17 @@ input.button {
     padding: 10px 14px 9px;
 }
 
+.med.button {
+    font-size: 10px;
+    padding: 8px 18px 9px;
+}
 
 .blue.button {
     background-color: #2daebf;
+}
+
+.red.button {
+    background-color: #EC4A5C;
 }
 
 footer{

@@ -11,13 +11,13 @@
 			<!-- If there is a connection with this user, sho an unfollow link -->
 			<? if(isset($connections[$user['user_id']])): ?>
 			<FORM method="LINK"  action="unfollow/<?=$user['user_id'].'/'?>'">
-				<INPUT TYPE="submit" VALUE="Unfollow">
+				<INPUT TYPE="submit" VALUE="Unfollow"class="med red button">
 			</FORM>
 			
 			<!-- Otherwise, show the folllow link -->
 			<? else: ?>
 			<FORM method="LINK"  action="follow/<?=$user['user_id'].'/'?>'">
-				<INPUT TYPE="submit" VALUE="Follow">
+				<INPUT TYPE="submit" VALUE="Follow" class="med blue button">
 			</FORM>
 			<? endif; ?>
 			
