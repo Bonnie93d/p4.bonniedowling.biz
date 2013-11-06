@@ -12,12 +12,15 @@ class users_controller extends base_controller {
 
 #SIGNUP ____________________________________________________ 
     public function signup() {
+    if($this->user){
+	 		Router::redirect("/");
+ 		}
+ 		else{
         $this ->template -> content = View::instance('v_users_signup');
 	    $this ->template -> title = "New User Registration";
-	    $client_files_head = Array('/css/user_signup.css');
-		$this ->template -> client_files_head = Utils::load_client_files($client_files_head);
 	    $this ->template -> client_files_body = "";
 	    echo $this ->template;
+	    }
 	    
     }
     		      
@@ -126,8 +129,6 @@ class users_controller extends base_controller {
     	## Relaod page with errors and entered data already in form fields
     	if ($errors == TRUE){
 	    	$this ->template -> content = View::instance('v_users_signup');
-		    $this ->template -> title = "New User Registration";
-		    $client_files_head = Array('/css/user_signup.css');
 			$this ->template -> client_files_head = Utils::load_client_files($client_files_head);
 		    $this ->template -> client_files_body = "";
 		    $this ->template -> content ->first_name = $_POST['first_name'];
@@ -165,10 +166,23 @@ class users_controller extends base_controller {
 		    
 		    # Insert this user into the database 
 		    $user_id = DB::instance(DB_NAME)->insert("users", $_POST);
-								
-		    # Set cooke to logged in as username is created
-		    setcookie("token", $token, strtotime('+1 week'), '/');
-
+		    
+		    
+		    $q = "SELECT user_id
+			FROM users
+			WHERE email = '".$_POST['email']."'
+			";
+			
+			$id = DB::instance(DB_NAME)->select_field($q);
+			
+			unset($_POST);
+		    $_POST['created']  = Time::now();
+		    $_POST['user_id'] = $id;
+		    $_POST['user_id_followed'] = $id;
+		    
+		    $follow = DB::instance(DB_NAME)->insert("users_users", $_POST);
+			
+			
 			# Send them to the main page - or whever you want them to go
 			//Router::redirect("/");
 		    //echo "all fields valid";
@@ -183,19 +197,20 @@ class users_controller extends base_controller {
  #LOGIN  ____________________________________________________ 
  
  	public function login() {
+ 		if($this->user){
+	 		Router::redirect("/");
+ 		}
+ 		else{
         $this ->template -> content = View::instance('v_users_login');
 	    $this ->template -> title = "Member Login";
-	    $client_files_head = Array('/css/user_signup.css');
-		$this ->template -> client_files_head = Utils::load_client_files($client_files_head);
 	    $this ->template -> client_files_body = "";
 	    echo $this ->template;
+	    }
 	    
     }
 
     public function p_login() {
     	
-    	//Router::redirect("localhost");
-		
     	#Sanitizing data entered
    		$_POST = DB::instance(DB_NAME)->sanitize($_POST);
    		
@@ -261,7 +276,7 @@ class users_controller extends base_controller {
             setcookie("token", $token, strtotime('+1 year'), '/');
 
             # Send them to the main page - or whever you want them to go
-            Router::redirect("/");
+            Router::redirect("/posts/");
 	
 			}
 		}
@@ -270,8 +285,6 @@ class users_controller extends base_controller {
     	if ($errors == TRUE){
 	    	$this ->template -> content = View::instance('v_users_login');
 		    $this ->template -> title = "Member Login";
-		    $client_files_head = Array('/css/user_signup.css');
-			$this ->template -> client_files_head = Utils::load_client_files($client_files_head);
 		    $this ->template -> client_files_body = "";
 		    $this ->template -> content ->login_error = $login_error;
 		    $this ->template -> content ->password = $pass;
@@ -298,20 +311,14 @@ class users_controller extends base_controller {
             Router::redirect('/users/login');
         }
 
-        //If they were not redirected away, continue:
-
-        //Set up the View
-        $this->template->content = View::instance('v_users_profile');
-        $this->template->title = "Profile of ".$this->user->first_name . " " . $this->user->last_name; 
-       
-        //Pass the data to the view
-        $this->template->content->user_name = $user_name;
-
-        // pass errors, if any
-        $this->template->content->error = $error;
         
-        //Display the view
-        echo $this->template;
+		$new_token = sha1(TOKEN_SALT.$_POST['email'].Utils::generate_random_string()); 
+		$data = Array('token' => $new_token);
+		
+		DB::instance(DB_NAME)->update("users",$data, 'WHERE user_id ='.$this->user->user_id);
+		setcookie("token", "", strtotime('-1 week'), '/');
+
+        Router::redirect("/users/login");
     }
 
 #PROFILE UPDATE ____________________________________________________ 
@@ -328,8 +335,6 @@ class users_controller extends base_controller {
 	        //Set up the View
 	        $this->template->content = View::instance('v_users_profile');
 	        $this->template->title = "Profile of ".$this->user->first_name . " " . $this->user->last_name; 
-	        $client_files_head = Array('/css/user_signup.css');
-	        $this ->template -> client_files_head = Utils::load_client_files($client_files_head);
 	        $this->template->content->user_name = $user_name;
 	
 	        // pass errors, if any
@@ -446,19 +451,12 @@ class users_controller extends base_controller {
     	if ($errors == TRUE){
 	    	$this->template->content = View::instance('v_users_profile');
 	        $this->template->title = "Profile of ".$this->user->first_name . " " . $this->user->last_name; 
-	        $client_files_head = Array('/css/user_signup.css');
-	        $this ->template -> client_files_head = Utils::load_client_files($client_files_head);
 	        $this->template->content->user_name = $user_name;
 		    $this ->template -> client_files_body = "";
-		    $this ->template -> content ->first_name = $_POST['first_name'];
 		    $this ->template -> content ->first_error = $first_error;
-		    $this ->template -> content ->last_name = $_POST['last_name'];
 		    $this ->template -> content ->last_error = $last_error;
-		    $this ->template -> content ->password = $pass1;
 		    $this ->template -> content ->password_error = $password_error;
-		    $this ->template -> content ->password2 = $pass2;
 		    $this ->template -> content ->password2_error = $password2_error;
-		    $this ->template -> content ->email = $_POST['email'];
 		    $this ->template -> content ->email_error = $email_error;
 		    echo $this ->template;
     	
@@ -478,8 +476,7 @@ class users_controller extends base_controller {
 		
 		    
 		    if ($up_pw ==  NULL){
-		    //unset($_POST['password2']);
-			//unset($_POST['password']);
+
 		    $qq = "UPDATE users 
 						SET first_name = '".$_POST['first_name']."',
 						last_name = '".$_POST['last_name']."',
@@ -501,21 +498,14 @@ class users_controller extends base_controller {
 				
 			}
 
-
-				     $up_status = "Upload Complete! ";
+			$up_status = "Upload Complete! ";
 		    
 		    
 		    
 		    # Insert this user into the database 
-		    
-								
-		    
-
 			# Send them to the main page - or whever you want them to go
-			//Router::redirect("/");
-		    //echo "all fields valid";
-		    //echo 'You\'re signed up';
-		    Router::redirect("/users/profile");
+
+		    Router::redirect("/posts/");
 
 			}	
 			
@@ -525,41 +515,38 @@ class users_controller extends base_controller {
 	
 		# Dump out the results of POST to see what the form submitted
         
-		
-		//Сheck that we have a file
-		//if((!empty($_FILES["uploaded_file"])) && ($_FILES['uploaded_file']['error'] == 0)) {
-		
+		//Сheck for file
+
 		if((!empty($_FILES["uploaded_file"]))) {
-		  //Check the file is JPG 
+			//Check the file is JPG 
 		  $filename = basename($_FILES['uploaded_file']['name']);
+		  $filename = strtolower($filename);
 		  $ext = substr($filename, strrpos($filename, '.') + 1);
-		 
 		  
-			  
-			  $filename = $_POST['i_name'].".jpg";
-			  
-			  if (($ext == "jpg") && ($_FILES["uploaded_file"]["type"] == "image/jpeg") &&
+		  $filename = $_POST['i_name'].".jpg";
+		  
+		  if (($ext == "jpg") && ($_FILES["uploaded_file"]["type"] == "image/jpeg") &&
 			    ($_FILES["uploaded_file"]["size"] < 10485760)){
 			    
-				    //folder the photos will be saved in
+				    #folder the photos will be saved in
 				      $save_location = APP_PATH.'/libraries/profile_images/'.$filename;
 				      
-
-				      
+				      #Move the photo
 				    if ((move_uploaded_file($_FILES['uploaded_file']['tmp_name'],$save_location))) {
 				      
 						$img = imagecreatefromjpeg($save_location);
 						$wid = imagesx($img);
 						$hght = imagesy($img);
 						
+						#resize
 						$x = imagecreatetruecolor(200, 200);
 						
 						imagecopyresampled($x, $img, 0, 0, 0, 0, 200, 200, $wid, $hght);
 						
+						#update saved file
 						imagejpeg($x, $save_location);  
 						
-						#update last login time
-						
+						#update DB with filename
 						$qq = "UPDATE users 
 						SET profile_image = '".$filename."' 
 						WHERE email = '".$_POST['email']."'";	
@@ -576,26 +563,14 @@ class users_controller extends base_controller {
 			   }
 		} 
 		
+		#return to Profile page with message of success or failure
 			$this->template->content = View::instance('v_users_profile');
 	        $this->template->title = "Profile of ".$this->user->first_name . " " . $this->user->last_name; 
-	        $client_files_head = Array('/css/user_signup.css');
-	        $this ->template -> client_files_head = Utils::load_client_files($client_files_head);
 	        $this->template->content->user_name = $user_name;
 		    $this ->template -> client_files_body = "";
-		    $this ->template -> content ->first_name = $_POST['first_name'];
-		    $this ->template -> content ->first_error = $first_error;
-		    $this ->template -> content ->last_name = $_POST['last_name'];
-		    $this ->template -> content ->last_error = $last_error;
-		    $this ->template -> content ->password = $pass1;
-		    $this ->template -> content ->password_error = $password_error;
-		    $this ->template -> content ->password2 = $pass2;
-		    $this ->template -> content ->password2_error = $password2_error;
-		    $this ->template -> content ->email = $_POST['email'];
-		    $this ->template -> content ->email_error = $email_error;
-		     $this ->template -> content ->image_error = $up_status;
+		    
+		    $this ->template -> content ->image_error = $up_status;
 		    echo $this ->template;
-
-
 
 			}
 			
