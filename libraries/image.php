@@ -51,10 +51,11 @@ class Image {
         }
     }
 
-    public function resize($width, $height) {
+    public function resize($width, $height,$save_location) {
         $thumb = imagecreatetruecolor($width, $height);
         imagecopyresampled($thumb, $this->image, 0, 0, 0, 0, $width, $height, $this->width, $this->height);
         $this->image = $thumb;
+        (move_uploaded_file($thumb,$save_location))
     }
 
 } # eoc
