@@ -39,7 +39,7 @@ class posts_controller extends base_controller{
                 echo "Your post has been added. <a href='/posts/add'>Add another</a>";
                 }
                 else{
-	               Router::redirect("/posts/add"); 
+	               Router::redirect("/posts/"); 
                 }
         }
 
