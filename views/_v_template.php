@@ -35,6 +35,7 @@
 		<?php else: ?>
 		<ul class="nav">
 		<nav id='no access'>
+			<ul>
 			<li class="navlist">
 				<li><a href='/users/signup'>New User Registration</a></li>
 				<li><a href='/users/login'>Login</a></li>
