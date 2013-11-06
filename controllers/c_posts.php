@@ -134,12 +134,12 @@ class posts_controller extends base_controller{
 				 	ON posts.user_id = users_users.user_id_followed
 				 	INNER JOIN users
                 ON posts.user_id = users.user_id
-				WHERE users_users.user_id = '.$this->user->user_id or '..$this->user->user_id.';
+				WHERE users_users.user_id = '.$this->user->user_id.'
+				ORDER BY posts.created DESC';
 
             #Run the query
             $posts = DB::instance(DB_NAME)->select_rows($q);
             
-
             
             #Pass the data to the View
             $this->template->content->posts = $posts;
