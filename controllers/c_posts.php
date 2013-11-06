@@ -35,9 +35,10 @@ class posts_controller extends base_controller{
                 #We didn't have to sanitize any of the $_POST data because we're using the insert method which does it for us.
                 DB::instance(DB_NAME)->insert('posts', $_POST);
 
-                #sending user back to posts where they can see the new post
-                Router::redirect("/posts/"); 
-               
+                #Route back to posts
+                Router::redirect("/posts/");
+                }
+                
         }
 
 #USERS____________________________________________________
