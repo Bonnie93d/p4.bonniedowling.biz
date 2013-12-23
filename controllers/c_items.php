@@ -1,5 +1,9 @@
 <?php
 
+<<<<<<< HEAD
+=======
+
+>>>>>>> cdc49e5bac0633b629a23d5950c0c9880992d64c
 class items_controller extends base_controller{
 
         public function __construct(){
