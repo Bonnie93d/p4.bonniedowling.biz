@@ -76,6 +76,7 @@
       <input type='text' class="roundboxLarge" id='itemName'>
       </span>
     </div>
+  
     </td>
   
     </tr>
@@ -91,6 +92,7 @@
       </div>
       </span>
     </div>
+  
     </td>
   
     </tr>
