@@ -1,4 +1,8 @@
 <?php
+
+ini_set('display_errors',1);
+error_reporting(E_ALL);
+
 class users_controller extends base_controller {
 
     public function __construct() {
@@ -16,93 +20,32 @@ class users_controller extends base_controller {
 	 		Router::redirect("/");
  		}
  		else{
+ 		
+ 		$client_files_body = Array(
+        '/js/userSignUp.js'
+        );
+
+    # Use load_client_files to generate the links from the above array
+    
+    	//$this->template->client_files_body = Utils::load_client_files($client_files_body); 
         $this ->template -> content = View::instance('v_users_signup');
 	    $this ->template -> title = "New User Registration";
-	    $this ->template -> client_files_body = "";
+	    $this->template->client_files_body = Utils::load_client_files($client_files_body); 
 	    echo $this ->template;
 	    }
 	    
     }
-    		      
-    
-    public function p_signup() {
+    		   
+    		   
+	public function p_signup(){
     	#testing data entered
     	$errors = NULL;
     	$passblank = NULL;
     	
-    	#Check if first name is blank, if so produce error
-    	if(empty($_POST['first_name'])){
-	    	$first_error = "**First name is required**";
-	    	$errors = TRUE;
-    	}
-    	else{
-	    	$first_error = "";
-    	}
-    	
-    	#Check if last  name is blank, if so produce error
-    	if(empty($_POST['last_name'])){
-	    	$last_error = "**Last name is required**";
-	    	$errors = TRUE;
-    	}
-    	else{
-	    	$last_error = "";
-    	}
-    	
-    	#Check if email is blank, if so produce error
-    	if(empty($_POST['email'])){
-	    	$email_error = "**Email is required**";
-	    	$errors = TRUE;
-    	}
-    	else{
-    	
-    	#Check if email is valid, if so produce error
-	    	if(!filter_var( $_POST['email'], FILTER_VALIDATE_EMAIL )){
-		    	$email_error = "**Invalid email format**";
-		    	$errors = TRUE;
-	    	}
-			else{
-	    		$email_error = "";
-				}
-			}
-    	
-    	#Check if password is blank, if so produce error
-    	if(empty($_POST['password'])){
-	    	$password_error = "**Password is required**";
-	    	$errors = TRUE;
-	    	$passblank = TRUE;
-    	}
-    	else{
-	    	$password_error = "";
-	    	$pass1 = $_POST['password'];
-    	}
-    	
-    	#Check if confirm password is blank, if so produce error
-    	if(empty($_POST['password2'])){
-	    	$password2_error = "**Password confirmation is required**";
-	    	$errors = TRUE;
-	    	$passblank = TRUE;
-    	}
-    	else{
-	    	$password_error = "";
-	    	$pass2 = $_POST['password2'];
-    	}
-    	
-    	#Check if Password and confirm password match, if so continue, if not error with blank pw fields
-		if ($passblank == NULL){
-			if($pass1 === $pass2){
-				$password_error = "";
-				$pass1 = $_POST['password'];
-				$pass2 = $_POST['password2'];
-			}
-			else{
-				$errors = TRUE;
-				$password_error = "**Passwords don't match, try again**";
-				$pass1 = "";
-				$pass2 = "";
-			}
-			
-		}  
-		
+
+
+
+
 		#Check if email address entered exists in database
 		#SQL query for ID# associated with email entered
 		$q = "SELECT user_id
@@ -126,72 +69,53 @@ class users_controller extends base_controller {
 	    	$errors = TRUE;
     	}	    	
 
-    	## Relaod page with errors and entered data already in form fields
-    	if ($errors == TRUE){
-	    	$this ->template -> content = View::instance('v_users_signup');
-			$this ->template -> client_files_head = Utils::load_client_files($client_files_head);
-		    $this ->template -> client_files_body = "";
-		    $this ->template -> content ->first_name = $_POST['first_name'];
-		    $this ->template -> content ->first_error = $first_error;
-		    $this ->template -> content ->last_name = $_POST['last_name'];
-		    $this ->template -> content ->last_error = $last_error;
-		    $this ->template -> content ->password = $pass1;
-		    $this ->template -> content ->password_error = $password_error;
-		    $this ->template -> content ->password2 = $pass2;
-		    $this ->template -> content ->password2_error = $password2_error;
-		    $this ->template -> content ->email = $_POST['email'];
-		    $this ->template -> content ->email_error = $email_error;
-		    echo $this ->template;
-    	
-    	}
-		else{
+    	# remove uneeded fields and cleaning input data
+		unset($_POST['password2']);
+		unset($_POST['register']);
+		$_POST = DB::instance(DB_NAME)->sanitize($_POST);
+			
+		# More data we want stored with the user
+		$_POST['created']  = Time::now();
+		$_POST['modified'] = Time::now();
+		$_POST['last_login'] = Time::now();
+		$_POST['timezone'] = date_default_timezone_get();
+		$_POST['profile_image'] = "default.jpg";
+		    
+		# Encrypt the password  
+		$_POST['password'] = sha1(PASSWORD_SALT.$_POST['password']);            
 		
-			# remove uneeded fields and cleaning input data
-			unset($_POST['password2']);
-			unset($_POST['register']);
-			$_POST = DB::instance(DB_NAME)->sanitize($_POST);
-			
-			# More data we want stored with the user
-		    $_POST['created']  = Time::now();
-		    $_POST['modified'] = Time::now();
-		    $_POST['last_login'] = Time::now();
-		    $_POST['timezone'] = date_default_timezone_get();
-		    $_POST['profile_image'] = "default.jpg";
+		# Create an encrypted token via their email address and a random string
+		$_POST['token'] = sha1(TOKEN_SALT.$_POST['email'].Utils::generate_random_string()); 
 		    
-			# Encrypt the password  
-		    $_POST['password'] = sha1(PASSWORD_SALT.$_POST['password']);            
-		
-		    # Create an encrypted token via their email address and a random string
-		    $_POST['token'] = sha1(TOKEN_SALT.$_POST['email'].Utils::generate_random_string()); 
-		    
-		    # Insert this user into the database 
-		    $user_id = DB::instance(DB_NAME)->insert("users", $_POST);
+		# Insert this user into the database 
+		$user_id = DB::instance(DB_NAME)->insert("users", $_POST);
 		    
 		    
-		    $q = "SELECT user_id
-			FROM users
-			WHERE email = '".$_POST['email']."'
-			";
+		//$q = "SELECT user_id
+		//FROM users
+		//WHERE email = '".$_POST['email']."'
+		//";
 			
-			$id = DB::instance(DB_NAME)->select_field($q);
+		//$id = DB::instance(DB_NAME)->select_field($q);
 			
-			unset($_POST);
-		    $_POST['created']  = Time::now();
-		    $_POST['user_id'] = $id;
-		    $_POST['user_id_followed'] = $id;
+		//unset($_POST);
+		//$_POST['created']  = Time::now();
+		//$_POST['user_id'] = $id;
+		//$_POST['user_id_followed'] = $id;
 		    
-		    $follow = DB::instance(DB_NAME)->insert("users_users", $_POST);
+		//$follow = DB::instance(DB_NAME)->insert("users_users", $_POST);
 			
 			
-			# Send them to the main page - or whever you want them to go
-			//Router::redirect("/");
-		    //echo "all fields valid";
-		    //echo 'You\'re signed up';
-		    Router::redirect("/users/login");
+		# Send them to the main page - or whever you want them to go
+		//Router::redirect("/");
+		//echo "all fields valid";
+		//echo 'You\'re signed up';
+		Router::redirect("/users/login");
 
 			}	
-			
-	}
+    		   
+    		      
+    
 
 
  #LOGIN  ____________________________________________________ 
@@ -321,7 +245,45 @@ class users_controller extends base_controller {
         Router::redirect("/users/login");
     }
 
-#PROFILE UPDATE ____________________________________________________ 
+
+
+#TEST Email ____________________________________________________ 
+		
+		public function p_testEmail(){
+			if(!filter_var( $_POST['email'], FILTER_VALIDATE_EMAIL )){
+				echo 'false';
+			}
+			else{
+				$emailTest = 'true';
+				#Check if email address entered exists in database
+				#SQL query for ID# associated with email entered
+				$q = "SELECT user_id
+				FROM users
+				WHERE email = '".$_POST['email']."'
+				";
+	
+				$test_email = DB::instance(DB_NAME)->select_field($q);
+		
+				# set email test variable to T/F
+				if ($test_email >0){
+					$new_email = NULL;
+				}
+				else {
+					$new_email = TRUE;
+				} 
+    	
+				if ($new_email == NULL){
+					$emailTest = 'false2';
+				}	    	
+
+				echo $emailTest;
+			}
+		}
+    	
+    				
+
+		
+		#PROFILE UPDATE ____________________________________________________ 
  
 		public function profile($error = NULL) {
 	
@@ -487,13 +449,8 @@ class users_controller extends base_controller {
 			$update = DB::instance(DB_NAME)->query($qq); 
 			}
 			else{
-					    $qq = "UPDATE users 
-						SET first_name = '".$_POST['first_name']."',
-						last_name = '".$_POST['last_name']."',
-						email = '".$_POST['email']."',
-						modified = '".$modified."',
-						password = '".$up_pw."'
-						WHERE user_id = '".$_POST['user_id']."'";	
+					    $qq = 
+					    	
 			$update = DB::instance(DB_NAME)->query($qq); 
 				
 			}
