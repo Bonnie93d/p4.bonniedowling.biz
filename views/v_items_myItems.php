@@ -5,13 +5,13 @@
   <tr>
     <td cclass="TableHeader">Item Name</td>
     <td cclass="TableHeader">List Date</td>
-    <td cclass="TableHeader">>Date of Sale</td>
+    <td cclass="TableHeader">Date of Sale</td>
     <td cclass="TableHeader">Item Cost</td>
     <td cclass="TableHeader">Actual S&amp;H</td>
     <td cclass="TableHeader">Sale Price</td>
     <td cclass="TableHeader">S&amp;H Charged</td>
     <td cclass="TableHeader">Total Fees</td>
-    <td cclass="TableHeader">>Net Profit</td>
+    <td cclass="TableHeader">Net Profit</td>
   </tr>
   <? foreach ($users as $user): ?>
   <tr>

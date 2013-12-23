@@ -155,7 +155,7 @@ class items_controller extends base_controller{
 	       $this ->template -> content = View::instance('v_item_update');
 		   $this ->template -> title = "Edit Item";
 		   $this->template->client_files_body = Utils::load_client_files($client_files_body); 
-		   $this ->template -> content ->itemInfo = $value;
+		   
 		   
 		   echo $this ->template;
         }    

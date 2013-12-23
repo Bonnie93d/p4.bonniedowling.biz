@@ -213,3 +213,21 @@ input.roundboxSmall:focus {
 	color: #667;
 	background-color: #F7F2E3;	
 }
+
+a:hover {
+	text-decoration: none;
+}
+nav ul {
+	padding: 0px;
+	list-style-type: none;
+	margin: 0px;
+}
+nav a:link, nav a:visited {
+	color: #FFF;
+	text-decoration: none;
+	background-color: #000000;
+}
+nav a:hover {
+	color: #000000;
+	background-color: #FFFFFF;
+}

@@ -1,7 +1,9 @@
-<!doctype html>
+<!DOCTYPE html>
+
 <html>
 <!--HEAD____________________-->
 <head>
+	<meta charset="UTF-8">
     <title><?php if(isset($title)) echo $title; ?></title>
 
     <meta http-equiv="Content-Type" content="text/html; charset=UTF-8" />   
@@ -12,7 +14,7 @@
   </head>
   
  <body>
-  
+ <div class="container">
 <!--HEADER____________________--> 
 <header>
 	<div class="HeaderImage">		
@@ -23,10 +25,8 @@
 		<nav id='access'>
 			<ul>
 			<li class="navlist">
-				<li><a href='/posts/add'>Add Post</a></li>
-				<li><a href='/posts'>View Posts</a></li>
-				<li><a href='/users/profile'>Update Profile</a></li>
-				<li><a href='/posts/users'>Follow/Unfollow Users</a></li>
+				<li><a href='/items/add'>Add Item</a></li>
+				<li><a href='/items/myItems'>Saved Items</a></li>
 				<li><a href='/users/logout'>Log Out</a></li>
 				<li></li>
 			</ul>
@@ -53,25 +53,25 @@
  
  <div class="content">
  
- <table width="90%" border="0" cellspacing="5" cellpadding="5">
+ <table >
   <tr>
-    <td><div align="center">
-	            <?php if(isset($content)) echo $content; ?>
+    <td>
+	  <?php if(isset($content)) echo $content; ?>
 
-    <?php if(isset($client_files_body)) echo $client_files_body; ?>
+	  <?php if(isset($client_files_body)) echo $client_files_body; ?>
 	    
     </div></td>
   </tr>
 </table>
     
-
+ </div>
 <!--FOOTER____________________-->
     
 <footer>
   <div class="footer">
 
 
-         <p>© 2013 Chitter Chatter</p>
+
          
 	</footer>
 	</body>

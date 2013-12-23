@@ -71,7 +71,7 @@ class users_controller extends base_controller {
  
  	public function login() {
  		if($this->user){
-	 		Router::redirect("/");
+	 		Router::redirect("/items/add");
  		}
  		else{
         $this ->template -> content = View::instance('v_users_login');
@@ -149,7 +149,7 @@ class users_controller extends base_controller {
             setcookie("token", $token, strtotime('+1 year'), '/');
 
             # Send them to the main page - or whever you want them to go
-            Router::redirect("/posts/");
+            Router::redirect("/items/add");
 	
 			}
 		}
