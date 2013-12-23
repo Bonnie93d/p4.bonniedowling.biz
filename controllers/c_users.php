@@ -1,7 +1,5 @@
 <?php
 
-ini_set('display_errors',1);
-error_reporting(E_ALL);
 
 class users_controller extends base_controller {
 
